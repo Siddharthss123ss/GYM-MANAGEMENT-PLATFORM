@@ -10,15 +10,34 @@ import {
     ArrowUpRight,
     UserPlus,
     Download,
-    BarChart3
+    ChevronRight
 } from "lucide-react";
+import { 
+    AreaChart, 
+    Area, 
+    XAxis, 
+    YAxis, 
+    CartesianGrid, 
+    Tooltip, 
+    ResponsiveContainer 
+} from 'recharts';
+
+const data = [
+    { day: "Mon", revenue: 4200 },
+    { day: "Tue", revenue: 3800 },
+    { day: "Wed", revenue: 5400 },
+    { day: "Thu", revenue: 4900 },
+    { day: "Fri", revenue: 7200 },
+    { day: "Sat", revenue: 8500 },
+    { day: "Sun", revenue: 6100 },
+];
 
 export default function DashboardPage() {
     const stats = [
-        { label: "Total Infrastructure Members", value: "854", icon: <Users size={18} />, color: "orange", growth: "+12% YTD" },
-        { label: "Monthly Gross Revenue", value: "₹1.2L", icon: <DollarSign size={18} />, color: "orange", growth: "+8.4% Δ" },
-        { label: "Real-time Occupancy", value: "42", icon: <Clock size={18} />, color: "orange", growth: "PEAK_STATUS" },
-        { label: "Credential Expirations", value: "15", icon: <AlertCircle size={18} />, color: "red", growth: "CRITICAL_ACTION" },
+        { label: "Total Active Members", value: "854", icon: <Users size={18} />, color: "purple", growth: "+12% this month" },
+        { label: "Total Revenue", value: "₹1,24,000", icon: <DollarSign size={18} />, color: "maroon", growth: "+8.4% vs last month" },
+        { label: "Daily Attendance", value: "42", icon: <Clock size={18} />, color: "purple", growth: "Current status" },
+        { label: "Pending Renewals", value: "15", icon: <AlertCircle size={18} />, color: "maroon", growth: "Action required" },
     ];
 
     return (
@@ -28,19 +47,19 @@ export default function DashboardPage() {
                 {/* 1. Header Section */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6 border-b border-[#1A1A1A] pb-8">
                     <div>
-                        <h1 className="text-3xl font-black text-white uppercase tracking-tighter italic">
-                            System <span className="text-orange-500">Overview</span>
+                        <h1 className="text-4xl font-black text-white uppercase tracking-tighter">
+                            Business <span className="text-purple-600">Dashboard</span>
                         </h1>
-                        <p className="text-gray-500 mt-2 font-mono text-xs uppercase tracking-[0.2em]">
-                            Operator: Admin_01 // Node: Pune_HQ // Status: Online
+                        <p className="text-gray-400 mt-2 font-medium">
+                            Welcome back. Here is what's happening with your gym today.
                         </p>
                     </div>
-                    <div className="flex gap-1">
-                        <button className="flex items-center gap-2 bg-[#0A0A0A] border border-[#1A1A1A] text-gray-400 px-4 py-2.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:text-white hover:bg-[#111] transition-all">
-                            <Download size={14} /> Export Logs
+                    <div className="flex gap-3">
+                        <button className="flex items-center gap-2 bg-[#111] border border-[#222] text-gray-300 px-5 py-3 rounded-none text-xs font-bold uppercase tracking-wider hover:bg-[#1a1a1a] transition-all cursor-pointer">
+                            <Download size={16} /> Download Report
                         </button>
-                        <button className="flex items-center gap-2 bg-orange-500 text-black px-4 py-2.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-orange-400 transition-all">
-                            <UserPlus size={14} strokeWidth={3} /> New Admission
+                        <button className="flex items-center gap-2 bg-purple-700 text-white px-5 py-3 rounded-none text-xs font-bold uppercase tracking-wider hover:bg-purple-600 transition-all border-b-4 border-purple-900 cursor-pointer">
+                            <UserPlus size={16} /> Add New Member
                         </button>
                     </div>
                 </div>
@@ -48,89 +67,113 @@ export default function DashboardPage() {
                 {/* 2. Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1 bg-[#1A1A1A] border border-[#1A1A1A] mb-1">
                     {stats.map((item, i) => (
-                        <div key={i} className="bg-[#0A0A0A] p-6 group hover:bg-[#0d0d0d] transition-colors">
+                        <div key={i} className="bg-[#0A0A0A] p-6 hover:bg-[#0E0E0E] transition-colors group cursor-default">
                             <div className="flex justify-between items-start mb-6">
-                                <div className="p-2.5 bg-[#050505] border border-[#1A1A1A] text-orange-500 rounded-sm">
+                                <div className={`p-3 bg-[#050505] border border-[#1A1A1A] ${item.color === 'maroon' ? 'text-red-500' : 'text-purple-500'}`}>
                                     {item.icon}
                                 </div>
-                                <span className={`font-mono text-[9px] font-black px-2 py-1 border rounded-sm ${item.color === 'red'
-                                        ? 'border-red-900/50 bg-red-900/10 text-red-500'
-                                        : 'border-orange-900/50 bg-orange-900/10 text-orange-500'
+                                <span className={`text-[10px] font-bold px-2 py-1 border ${item.color === 'maroon'
+                                        ? 'border-red-900/50 bg-red-950/30 text-red-500'
+                                        : 'border-purple-900/50 bg-purple-950/30 text-purple-500'
                                     }`}>
                                     {item.growth}
                                 </span>
                             </div>
-                            <h3 className="text-gray-600 text-[10px] font-black uppercase tracking-[0.2em]">{item.label}</h3>
-                            <p className="text-3xl font-black text-white mt-2 tracking-tighter">{item.value}</p>
+                            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest">{item.label}</h3>
+                            <p className="text-3xl font-black text-white mt-1 tracking-tight">{item.value}</p>
                         </div>
                     ))}
                 </div>
 
                 <div className="grid lg:grid-cols-3 gap-1">
 
-                    {/* 3. Revenue Analytics - Oscilloscope Style */}
-                    <div className="lg:col-span-2 bg-[#0A0A0A] p-6 border border-[#1A1A1A]">
+                    {/* 3. Revenue Chart */}
+                    <div className="lg:col-span-2 bg-[#0A0A0A] p-8 border border-[#1A1A1A]">
                         <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-xs font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
-                                <TrendingUp className="text-orange-500" size={16} /> Financial Analytics
+                            <h2 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                                <TrendingUp className="text-purple-500" size={18} /> Revenue Overview
                             </h2>
-                            <select className="bg-[#050505] border border-[#1A1A1A] text-[10px] font-black uppercase tracking-widest text-gray-400 rounded-sm px-3 py-1.5 outline-none focus:border-orange-500 transition-colors">
-                                <option>Interval: 7 Days</option>
-                                <option>Interval: 30 Days</option>
+                            <select className="bg-[#050505] border border-[#1A1A1A] text-xs font-bold text-gray-400 rounded-none px-4 py-2 outline-none focus:border-purple-500 cursor-pointer">
+                                <option>Last 7 Days</option>
+                                <option>Last 30 Days</option>
                             </select>
                         </div>
 
-                        <div className="h-72 w-full bg-[#050505] border border-[#1A1A1A] rounded-sm flex items-center justify-center relative overflow-hidden group">
-                            {/* Technical Grid Background */}
-                            <div className="absolute inset-0 opacity-5 pointer-events-none"
-                                style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', size: '20px 20px', backgroundSize: '30px 30px' }}>
-                            </div>
-
-                            <div className="text-gray-700 flex flex-col items-center z-10">
-                                <BarChart3 className="w-10 h-10 mb-3 opacity-20 group-hover:text-orange-500 transition-colors" />
-                                <p className="text-[10px] font-mono uppercase tracking-[0.3em]">Telemetry_Loading...</p>
-                            </div>
-
-                            {/* Stylized Data Bars */}
-                            <div className="absolute bottom-0 left-0 right-0 flex items-end justify-around px-10 h-40 opacity-20">
-                                {[40, 70, 55, 90, 65, 80, 45].map((h, i) => (
-                                    <div key={i} className="w-6 bg-orange-500 rounded-t-sm transition-all duration-700 hover:opacity-100" style={{ height: `${h}%` }}></div>
-                                ))}
-                            </div>
+                        <div className="h-80 w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={data}>
+                                    <defs>
+                                        <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#7e22ce" stopOpacity={0.3}/>
+                                            <stop offset="95%" stopColor="#7e22ce" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="0" stroke="#1A1A1A" vertical={false} />
+                                    <XAxis 
+                                        dataKey="day" 
+                                        stroke="#444" 
+                                        fontSize={12} 
+                                        tickLine={false} 
+                                        axisLine={false}
+                                        tick={{ fontWeight: '600' }}
+                                        dy={10}
+                                    />
+                                    <YAxis 
+                                        stroke="#444" 
+                                        fontSize={11} 
+                                        tickLine={false} 
+                                        axisLine={false}
+                                        tick={{ fontWeight: '600' }}
+                                        tickFormatter={(value) => `₹${value}`}
+                                    />
+                                    <Tooltip 
+                                        contentStyle={{ backgroundColor: '#0A0A0A', border: '1px solid #333', borderRadius: '0px' }}
+                                        itemStyle={{ color: '#a855f7', fontSize: '12px', fontWeight: 'bold' }}
+                                    />
+                                    <Area 
+                                        type="monotone" 
+                                        dataKey="revenue" 
+                                        stroke="#a855f7" 
+                                        strokeWidth={3}
+                                        fillOpacity={1} 
+                                        fill="url(#colorRev)" 
+                                    />
+                                </AreaChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
 
-                    {/* 4. Recent Transactions Log */}
-                    <div className="bg-[#0A0A0A] p-6 border border-[#1A1A1A]">
-                        <h2 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-8">Transaction Logs</h2>
-                        <div className="space-y-4">
+                    {/* 4. Recent Payments */}
+                    <div className="bg-[#0A0A0A] p-8 border border-[#1A1A1A]">
+                        <h2 className="text-sm font-black text-white uppercase tracking-widest mb-8">Recent Payments</h2>
+                        <div className="space-y-5">
                             {[
-                                { user: "Amit R.", plan: "Yearly_Elite", amount: "₹12,000", time: "02H_AGO" },
-                                { user: "Sonal V.", plan: "Monthly_Std", amount: "₹1,500", time: "05H_AGO" },
-                                { user: "Karan P.", plan: "Quart_Pro", amount: "₹4,500", time: "1D_AGO" },
-                                { user: "Priya M.", plan: "Monthly_Std", amount: "₹1,500", time: "1D_AGO" },
-                                { user: "Rahul S.", plan: "Monthly_Std", amount: "₹1,500", time: "2D_AGO" },
-                            ].map((sale, i) => (
-                                <div key={i} className="flex items-center justify-between group p-2 hover:bg-[#050505] border border-transparent hover:border-[#1A1A1A] transition-all rounded-sm">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 bg-[#111] border border-[#1A1A1A] flex items-center justify-center text-orange-500 font-black text-[10px]">
-                                            {sale.user.charAt(0)}
+                                { name: "Amit Sharma", plan: "Yearly Elite", amount: "₹12,000", date: "2 hours ago" },
+                                { name: "Sonal Verma", plan: "Monthly Standard", amount: "₹1,500", date: "5 hours ago" },
+                                { name: "Karan Patel", plan: "Quarterly Pro", amount: "₹4,500", date: "Yesterday" },
+                                { name: "Priya Mehta", plan: "Monthly Standard", amount: "₹1,500", date: "Yesterday" },
+                                { name: "Rahul Singh", plan: "Monthly Standard", amount: "₹1,500", date: "2 days ago" },
+                            ].map((payment, i) => (
+                                <div key={i} className="flex items-center justify-between group cursor-pointer border-b border-transparent hover:border-purple-900/30 pb-2 transition-all">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-10 w-10 bg-gradient-to-br from-purple-900 to-black border border-[#222] flex items-center justify-center text-white font-black text-sm">
+                                            {payment.name.charAt(0)}
                                         </div>
                                         <div>
-                                            <p className="text-xs font-black text-white uppercase tracking-tight group-hover:text-orange-500 transition-colors">{sale.user}</p>
-                                            <p className="text-[9px] text-gray-600 font-mono tracking-tighter uppercase">{sale.plan}</p>
+                                            <p className="text-sm font-bold text-white group-hover:text-purple-400 transition-colors">{payment.name}</p>
+                                            <p className="text-[11px] text-gray-500 font-medium">{payment.plan}</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-xs font-black text-white tracking-tighter">{sale.amount}</p>
-                                        <p className="text-[9px] text-orange-500/50 font-mono font-bold">{sale.time}</p>
+                                        <p className="text-sm font-black text-white">{payment.amount}</p>
+                                        <p className="text-[10px] text-red-700 font-bold uppercase">{payment.date}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
 
-                        <button className="w-full mt-8 py-3 bg-[#050505] border border-[#1A1A1A] text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all flex items-center justify-center gap-2">
-                            Full Ledger Access <ArrowUpRight size={14} />
+                        <button className="w-full mt-10 py-4 bg-transparent border border-red-900/40 text-red-500 text-xs font-black uppercase tracking-widest hover:bg-red-950/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                            View All Transactions <ChevronRight size={16} />
                         </button>
                     </div>
 
