@@ -31,7 +31,7 @@ export default function SignupPage() {
             });
 
             if (res.ok) {
-                router.push("/account-setup");
+                window.location.href = "/user-profile";
             }
         } catch (err) {
             console.error("Signup failed:", err);

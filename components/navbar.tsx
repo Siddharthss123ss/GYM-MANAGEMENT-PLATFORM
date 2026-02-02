@@ -7,7 +7,6 @@ import {
     ChevronDown, LogOut, Settings, ArrowRight
 } from "lucide-react";
 import { useAuthStore } from "@/app/store/useAuthStore";
-import { is } from "zod/locales";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);

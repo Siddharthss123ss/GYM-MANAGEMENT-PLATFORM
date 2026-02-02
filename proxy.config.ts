@@ -4,6 +4,6 @@ export const config = {
     "/dashboard/:path*",
     "/attendance/:path*",
     "/members/:path*",
-    "/profile/:path*",
+    "/user-profile/:path*",
   ],
 };
