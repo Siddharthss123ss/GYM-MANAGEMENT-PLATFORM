@@ -33,7 +33,6 @@ const userSchema = new Schema(
             public_id: String,
         },
 
-        /** ADDRESS (for gym suggestions) */
         address: {
             state: String,
             city: String,
@@ -41,14 +40,12 @@ const userSchema = new Schema(
             street: String,
         },
 
-        /** ROLES */
         role: {
             type: String,
-            enum: ["user", "gym_admin", "verifier", "super_admin"],
+            enum: ["user", "gym_admin", "super_admin"],
             default: "user",
         },
 
-        /** PROFILE FLOW */
         profileCompleted: {
             type: Boolean,
             default: false,

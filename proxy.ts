@@ -19,26 +19,29 @@ export function proxy(req: NextRequest) {
   }
 
   const isApiRoute = pathname.startsWith("/api");
-  const isProtectedPage =
+  const isAdminRoute = pathname.startsWith("/admin");
+  const isUserProtectedPage =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/attendance") ||
     pathname.startsWith("/members") ||
-    pathname.startsWith("/user-profile");
+    pathname.startsWith("/user-profile") ||
+    pathname.startsWith("/gyms");
 
-  if (isApiRoute && !token) {
-    return NextResponse.json(
-      { message: "Not Found" },
-      { status: 404 }
-    );
+  if (!token && (isUserProtectedPage || isAdminRoute)) {
+    return NextResponse.rewrite(new URL("/404", req.url));
   }
 
-  if (isProtectedPage && !token) {
-    return NextResponse.rewrite(new URL("/404", req.url));
+  if (!token && isApiRoute) {
+    return NextResponse.json({ message: "Not Found" }, { status: 404 });
   }
 
   if (token) {
     try {
-      verifyToken(token);
+      const decoded = verifyToken(token);
+      if (isAdminRoute && decoded.role !== "super_admin") {
+        return NextResponse.rewrite(new URL("/404", req.url));
+      }
+
       return NextResponse.next();
     } catch {
       return NextResponse.rewrite(new URL("/404", req.url));

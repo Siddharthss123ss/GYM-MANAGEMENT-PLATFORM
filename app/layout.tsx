@@ -7,6 +7,9 @@ import AuthHydrator from "@/components/authhydrator";
 export const metadata: Metadata = {
   title: "GymVerse",
   description: "Your Ultimate Fitness Companion",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({
